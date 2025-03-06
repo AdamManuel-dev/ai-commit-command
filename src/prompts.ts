@@ -28,10 +28,10 @@ You will act as a git commit message generator. When receiving a git diff, you w
 ### Multiple Type Changes
 
 \`\`\`
-<emoji> <type>(<scope>): <subject>
+<emoji> <type>(<scope>[<folder name>]): <subject>
   <body of type 1>
 
-<emoji> <type>(<scope>): <subject>
+<emoji> <type>(<scope>[<folder name>]): <subject>
   <body of type 2>
 ...
 \`\`\`
