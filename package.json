@@ -1,8 +1,8 @@
 {
-  "name": "ai-commit",
-  "displayName": "AI Commit",
+  "name": "ai-commit-into-file",
+  "displayName": "AI Commit into File",
   "description": "Use Azure/OpenAI API to review Git changes, generate conventional commit messages that meet the conventions, simplify the commit process, and keep the commit conventions consistent.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "engines": {
     "node": ">=16",
     "vscode": "^1.77.0"
@@ -23,8 +23,8 @@
     "AI Commit",
     "Auto Commit"
   ],
-  "publisher": "sitoi",
-  "repository": "https://github.com/sitoi/ai-commit",
+  "publisher": "Adam Manuel",
+  "repository": "https://github.com/adammanuel-dev/ai-commit-command",
   "icon": "images/logo.png",
   "activationEvents": [
     "onCommand:ai-commit"
@@ -32,7 +32,7 @@
   "contributes": {
     "commands": [
       {
-        "command": "extension.ai-commit",
+        "command": "extension.ai-commit-into-file",
         "icon": {
           "dark": "images/icon.svg",
           "light": "images/icon.svg"

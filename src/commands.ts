@@ -11,7 +11,7 @@ export class CommandManager {
   constructor(private context: vscode.ExtensionContext) {}
 
   registerCommands() {
-    this.registerCommand('extension.ai-commit', generateCommitMsg);
+    this.registerCommand('extension.ai-commit-into-file', generateCommitMsg);
     this.registerCommand('extension.configure-ai-commit', () =>
       vscode.commands.executeCommand('workbench.action.openSettings', 'ai-commit')
     );
@@ -23,17 +23,21 @@ export class CommandManager {
       const selected = await vscode.window.showQuickPick(models, {
         placeHolder: 'Please select a model'
       });
-      
+
       if (selected) {
         const config = vscode.workspace.getConfiguration('ai-commit');
-        await config.update('OPENAI_MODEL', selected, vscode.ConfigurationTarget.Global);
+        await config.update(
+          'OPENAI_MODEL',
+          selected,
+          vscode.ConfigurationTarget.Global
+        );
       }
     });
 
     /**
      * @deprecated
      * This function is deprecated because Gemini API does not currently support listing models via API.
-     * 
+     *
      * Show available Gemini models
      */
     /*
