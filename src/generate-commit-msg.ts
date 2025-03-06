@@ -65,7 +65,7 @@ export async function getRepo(arg) {
  * Generates a commit message based on the changes staged in the repository.
  *
  * @param {any} arg - The input argument containing the root URI of the repository.
- * @returns {Promise<void>} - A promise that resolves when the commit message has been generated and set in the SCM input box.
+ * @returns {Promise<void>} - A promise that resolves when the commit message has been generated and inserted at the cursor in the current file.
  */
 export async function generateCommitMsg(arg) {
   return ProgressHandler.withProgress('', async (progress) => {
@@ -73,7 +73,10 @@ export async function generateCommitMsg(arg) {
       const configManager = ConfigurationManager.getInstance();
       const repo = await getRepo(arg);
 
-      const aiProvider = configManager.getConfig<string>(ConfigKeys.AI_PROVIDER, 'openai');
+      const aiProvider = configManager.getConfig<string>(
+        ConfigKeys.AI_PROVIDER,
+        'openai'
+      );
 
       progress.report({ message: 'Getting staged changes...' });
       const { diff, error } = await getDiffStaged(repo);
@@ -86,12 +89,10 @@ export async function generateCommitMsg(arg) {
         throw new Error('No changes staged for commit');
       }
 
+      // Retrieve additional context from the SCM input box if available.
+      // Instead of failing when the input box is missing, we fallback to an empty string.
       const scmInputBox = repo.inputBox;
-      if (!scmInputBox) {
-        throw new Error('Unable to find the SCM input box');
-      }
-
-      const additionalContext = scmInputBox.value.trim();
+      const additionalContext = scmInputBox ? scmInputBox.value.trim() : '';
 
       progress.report({
         message: additionalContext
@@ -112,22 +113,31 @@ export async function generateCommitMsg(arg) {
         let commitMessage: string | undefined;
 
         if (aiProvider === 'gemini') {
-          const geminiApiKey = configManager.getConfig<string>(ConfigKeys.GEMINI_API_KEY);
+          const geminiApiKey = configManager.getConfig<string>(
+            ConfigKeys.GEMINI_API_KEY
+          );
           if (!geminiApiKey) {
             throw new Error('Gemini API Key not configured');
           }
           commitMessage = await GeminiAPI(messages);
         } else {
-          const openaiApiKey = configManager.getConfig<string>(ConfigKeys.OPENAI_API_KEY);
+          const openaiApiKey = configManager.getConfig<string>(
+            ConfigKeys.OPENAI_API_KEY
+          );
           if (!openaiApiKey) {
             throw new Error('OpenAI API Key not configured');
           }
           commitMessage = await ChatGPTAPI(messages as ChatCompletionMessageParam[]);
         }
 
-
         if (commitMessage) {
-          scmInputBox.value = commitMessage;
+          const activeEditor = vscode.window.activeTextEditor;
+          if (!activeEditor) {
+            throw new Error('No active text editor found');
+          }
+          await activeEditor.edit((editBuilder) => {
+            editBuilder.insert(activeEditor.selection.active, commitMessage);
+          });
         } else {
           throw new Error('Failed to generate commit message');
         }
