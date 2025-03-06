@@ -1,3 +1,7 @@
+# THIS IS A FORK
+
+This is a fork of the ai-commit extension that allows you to use the command pallette to generate the commit in the current open editor. This is so you can use the command line `git commit` with VS Code as the commit editor to allow for easier editing then the Source Control UI. 
+
 <a name="readme-top"></a>
 
 <div align="center">
