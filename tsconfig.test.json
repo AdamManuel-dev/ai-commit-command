@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "CommonJS",
+    "strict": true,
+    "esModuleInterop": true,
+    "types": ["node", "jest"], // Include Jest types for global variables like 'describe' and 'it'
+    "outDir": "dist"
+  },
+  "include": [
+    "src/**/*",
+    "__tests__/**/*", // Includes all test files in the __tests__ folder
+    "*.test.ts", // Optionally include root-level test files
+    "*.test.tsx", // If you have test files with .tsx extensions
+    "*.spec.ts",
+    "*.spec.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist" // Exclude the output directory
+  ]
+}

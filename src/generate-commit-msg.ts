@@ -7,6 +7,7 @@ import { ChatGPTAPI } from './openai-utils';
 import { getMainCommitPrompt } from './prompts';
 import { ProgressHandler } from './utils';
 import { GeminiAPI } from './gemini-utils';
+import { getDirectoryTree } from './fs-utils';
 // import { getDirectoryTree } from './fs-utils';
 
 /**
@@ -16,7 +17,7 @@ import { GeminiAPI } from './gemini-utils';
  * @param {string} additionalContext - Additional context for the changes.
  * @returns {Promise<Array<{ role: string, content: string }>>} - A promise that resolves to an array of messages for the chat completion.
  */
-const generateCommitMessageChatCompletionPrompt = async (
+export const generateCommitMessageChatCompletionPrompt = async (
   diff: string,
   additionalContext?: string
 ) => {
@@ -30,19 +31,19 @@ const generateCommitMessageChatCompletionPrompt = async (
     });
   }
 
-  // try {
-  //   const directoryTree = await getDirectoryTree();
-  //   chatContextAsCompletionRequest.push({
-  //     role: 'user',
-  //     content: `Here is the directory structure:\n${directoryTree}`
-  //   });
-  // } catch (error) {
-  //   console.error('Error retrieving directory structure:', error);
-  //   // Handle the error gracefully, e.g., log it or notify the user
-  //   vscode.window.showErrorMessage(
-  //     'Failed to retrieve directory structure. Commit message generation may be less accurate.'
-  //   );
-  // }
+  try {
+    const directoryTree = await getDirectoryTree();
+    chatContextAsCompletionRequest.push({
+      role: 'user',
+      content: `Here is the directory structure:\n${directoryTree}`
+    });
+  } catch (error) {
+    console.error('Error retrieving directory structure:', error);
+    // Handle the error gracefully, e.g., log it or notify the user
+    vscode.window.showErrorMessage(
+      'Failed to retrieve directory structure. Commit message generation may be less accurate.'
+    );
+  }
 
   chatContextAsCompletionRequest.push({
     role: 'user',
