@@ -7,6 +7,7 @@ import { ChatGPTAPI } from './openai-utils';
 import { getMainCommitPrompt } from './prompts';
 import { ProgressHandler } from './utils';
 import { GeminiAPI } from './gemini-utils';
+// import { getDirectoryTree } from './fs-utils';
 
 /**
  * Generates a chat completion prompt for the commit message based on the provided diff.
@@ -28,6 +29,20 @@ const generateCommitMessageChatCompletionPrompt = async (
       content: `Additional context for the changes:\n${additionalContext}`
     });
   }
+
+  // try {
+  //   const directoryTree = await getDirectoryTree();
+  //   chatContextAsCompletionRequest.push({
+  //     role: 'user',
+  //     content: `Here is the directory structure:\n${directoryTree}`
+  //   });
+  // } catch (error) {
+  //   console.error('Error retrieving directory structure:', error);
+  //   // Handle the error gracefully, e.g., log it or notify the user
+  //   vscode.window.showErrorMessage(
+  //     'Failed to retrieve directory structure. Commit message generation may be less accurate.'
+  //   );
+  // }
 
   chatContextAsCompletionRequest.push({
     role: 'user',
